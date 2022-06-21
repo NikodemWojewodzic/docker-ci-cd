@@ -24,11 +24,7 @@ jobs:
           run: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
-<<<<<<< HEAD
         - name: Test with unittest
-=======
-        - name: Test with pytest
->>>>>>> a8a9af0 (added test, updated workflow)
           run: |
             pytest
         - name: Build and push Docker image
