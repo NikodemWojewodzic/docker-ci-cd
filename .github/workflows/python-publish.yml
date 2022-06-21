@@ -3,6 +3,9 @@ name: Python Package
 on:
     push:
       branches: [ main ]
+    pull_request:
+      branches: [ main ]
+
 
 jobs:
     deploy:
@@ -13,20 +16,22 @@ jobs:
             python-version: [3.8]
        steps:
         - uses: actions/checkout@v2
-        - name: Initialize Python 3.7
+        - name: Initialize Python 3.8
           uses: actions/setup-python@v1
           with:
             python-version: ${{matrix.python-version}}
-        - name: Install dependencies
+        - name: Install needed dependencies
           run: |
             python -m pip install --upgrade pip
             pip install -r requirements.txt
-        - name: Check docker installed or not
-          run: docker run hello-world
-        - name: Push to docker hub
-          uses: docker/build-push-action/@v1
+        - name: Test with unittest
+          run: |
+            pytest
+        - name: Build and push Docker image
+          uses: mr-smithers-excellent/docker-build-push@v5
           with:
+            image: nikowoj900/docker-ci-cd
+            registry: docker.io
             username: ${{secrets.DOCKER_USERNAME}}
             password: ${{secrets.DOCKER_PASSWORD}}
-            repository: ${{secrets.DOCKERHUB_REPO}}
-            tag_with_ref: true
+
